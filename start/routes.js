@@ -15,4 +15,6 @@
 
 const Route = use('Route')
 
-Route.on('/').render('welcome')
+Route.on('/').render('home')
+
+Route.get('/posts','PostController.index')
