@@ -8,11 +8,18 @@
         {{ csrfField() }}
         <div class="form-group">
             <label>Заголовок</label>
-            <input type="text" name="title" class="form-control" placeholder="Введите заголовок">
+            <input type="text" name="title" class="form-control" placeholder="Введите заголовок" value="{{ old('title', '') }}">
+            {{ elIf('<span class="text-danger">$self</span>', getErrorFor('title'), hasErrorFor('title')) }}
         </div>
         <div class="form-group">
             <label>Контент</label>
-            <textarea name="body" class="form-control" placeholder="Содержание"></textarea>
+            <textarea 
+                name="body" 
+                class="form-control"
+                placeholder="Содержание"
+                rows="4"
+             >{{ old('body', '') }}</textarea>
+             {{ elIf('<span class="text-danger">$self</span>', getErrorFor('body'), hasErrorFor('body')) }}
         </div>
         <button class="btn btn-info">Добавить</button>
     </form>

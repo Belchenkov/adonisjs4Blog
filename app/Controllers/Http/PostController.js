@@ -2,6 +2,8 @@
 
 // Bring in model
 const Post = use('App/Models/Post')
+// Bring in validator
+const { validate } = use('Validator')
 
 class PostController {
     async index({ view }) {
@@ -14,7 +16,7 @@ class PostController {
         const posts = await Post.all();
 
         return view.render('posts.index', {
-            title: 'Latest Post',
+            title: 'Свежие статьи',
             posts: posts.toJSON()
         })
     }
@@ -29,6 +31,30 @@ class PostController {
 
     async add({ view }) {
         return view.render('posts.add')
+    }
+
+    async store({ request, response, session }) {
+        // Validate input
+        const validation = await validate(request.all(), {
+            title: 'required|min:3|max:255',
+            body: 'required|min:3'
+        })
+
+        if(validation.fails()) {
+            session.withErrors(validation.messages()).flashAll()
+            return response.redirect('back')
+        }
+
+        const post = new Post();
+
+        post.title = request.input('title')
+        post.body = request.input('body')
+        await post.save()
+
+        // Show notification
+        session.flash({ notification: 'Статья добавлена!' })
+
+        return response.redirect('/posts')
     }
 }
 
