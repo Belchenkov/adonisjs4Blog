@@ -3,12 +3,12 @@
 @section('content')
     <a href="/posts" class="btn btn-primary btn-sm">Назад</a>
     <hr>
-    <h1>Добавить статью</h1>
-    <form action="/posts" method="POST">
+    <h1>Редактировать статью</h1>
+    <form action="{{ '/posts/' + post.id + '?_method=PUT' }}" method="POST">
         {{ csrfField() }}
         <div class="form-group">
             <label>Заголовок</label>
-            <input type="text" name="title" class="form-control" placeholder="Введите заголовок" value="{{ old('title', '') }}">
+            <input type="text" name="title" class="form-control" placeholder="Введите заголовок" value="{{post.title}}">
             {{ elIf('<span class="text-danger">$self</span>', getErrorFor('title'), hasErrorFor('title')) }}
         </div>
         <div class="form-group">
@@ -18,9 +18,9 @@
                 class="form-control"
                 placeholder="Содержание"
                 rows="4"
-             >{{ old('body', '') }}</textarea>
+             >{{post.title}}</textarea>
              {{ elIf('<span class="text-danger">$self</span>', getErrorFor('body'), hasErrorFor('body')) }}
         </div>
-        <button class="btn btn-info">Добавить</button>
+        <button class="btn btn-info">Редактировать</button>
     </form>
 @endsection

@@ -29,10 +29,12 @@ class PostController {
         })
     }
 
+    // Add New Article (Form)
     async add({ view }) {
         return view.render('posts.add')
     }
 
+    // Save Article
     async store({ request, response, session }) {
         // Validate input
         const validation = await validate(request.all(), {
@@ -53,6 +55,49 @@ class PostController {
 
         // Show notification
         session.flash({ notification: 'Статья добавлена!' })
+
+        return response.redirect('/posts')
+    }
+
+    async edit({ params, view }) {
+        const post = await Post.find(params.id)
+
+        return view.render('posts.edit', {
+            post: post
+        })
+    }
+
+    // Update Article
+    async update({ params, request, response, session }) {
+        // Validate input
+        const validation = await validate(request.all(), {
+            title: 'required|min:3|max:255',
+            body: 'required|min:3'
+        })
+
+        if(validation.fails()) {
+            session.withErrors(validation.messages()).flashAll()
+            return response.redirect('back')
+        }
+
+        const post = await Post.find(params.id);
+
+        post.title = request.input('title')
+        post.body = request.input('body')
+        await post.save()
+
+        // Show notification
+        session.flash({ notification: 'Статья обновлена!' })
+
+        return response.redirect('/posts')
+    }
+
+    async delete({ params, response, session }) {
+        const post = await Post.find(params.id)
+        await post.delete()
+
+        // Show notification
+        session.flash({ notification: 'Статья удалена!' })
 
         return response.redirect('/posts')
     }
